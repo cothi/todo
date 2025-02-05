@@ -21,6 +21,7 @@ export class CategoryService {
   ) {}
 
   async createCategory(params: CreateCategoryParams): Promise<Category> {
+    CategoryPolicyLogic.canCreateCategory(params.project, params.reqUserId);
     const entity = Category.create({
       projectId: params.projectId,
       name: params.name,

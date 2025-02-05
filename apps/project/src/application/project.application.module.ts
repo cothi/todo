@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { CreateCategoryHandler } from '@project/application/command/category/handler/create-category.handler';
-import { DeleteCategoryHandler } from '@project/application/command/category/handler/delete-category.handler';
+import { CreateCategoryHandler } from '@project/application/command/category/handler/create-category-command.handler';
+import { DeleteCategoryHandler } from '@project/application/command/category/handler/delete-category-command.handler';
 import { CreateProjectHandler } from '@project/application/command/unit-project/handler/create-project.handler';
 import { DeleteProjectHandler } from '@project/application/command/unit-project/handler/delete-project.handler';
 import { UpdateProjectHandler } from '@project/application/command/unit-project/handler/update-project.handler';
@@ -22,7 +22,7 @@ import { ProjectInvitationService } from './service/project-invitation.service';
 import { UpdateProjectInvitationCommandHandler } from './command/project-invitation/handlers/update-project-invitation-command.handler';
 import { RejectProjectInvitationCommandHandler } from './command/project-invitation/handlers/reject-project-invitation-command.handler';
 import { AcceptProjectInvitationCommandHandler } from './command/project-invitation/handlers/accept-project-invitation-command.handler';
-import { ChangeCategoryNameHandler } from './command/category/handler/change-category-name.handler';
+import { ChangeCategoryNameHandler } from './command/category/handler/change-category-name-command.handler';
 import { ProjectMembershipService } from './service/project-membership.service';
 
 @Module({

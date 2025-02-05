@@ -1,4 +1,7 @@
+import { TokenInfo } from '@libs/decorators';
+import { JwtAuthGuard, JwtPayload } from '@libs/jwt';
 import { ResponseManager } from '@libs/response';
+import { UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { TaskPresentationMapper } from '../mapper/task.presentation.mapper';
@@ -26,12 +29,14 @@ export class TaskResolver {
   ) {}
 
   @Mutation(() => CreateTaskResponse)
+  @UseGuards(JwtAuthGuard)
   async createTask(
     @Args('input') input: CreateTaskInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<CreateTaskResponse> {
     const command = TaskPresentationMapper.createInputToCreateTaskCommand(
       input,
-      'test',
+      payload.userId,
     );
     const result = await this.commandBus.execute(command);
     const output = TaskPresentationMapper.entityToCreateTaskOutput(result);
@@ -39,12 +44,14 @@ export class TaskResolver {
   }
 
   @Mutation(() => UpdateTaskResponse)
+  @UseGuards(JwtAuthGuard)
   async updateTask(
     @Args('input') input: UpdateTaskInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<UpdateTaskResponse> {
     const command = TaskPresentationMapper.updateInputToUpdateTaskCommand(
       input,
-      'test',
+      payload.userId,
     );
     const result = await this.commandBus.execute(command);
     const output = TaskPresentationMapper.entityToUpdateTaskOutput(result);
@@ -52,12 +59,14 @@ export class TaskResolver {
   }
 
   @Mutation(() => DeleteTaskResponse)
+  @UseGuards(JwtAuthGuard)
   async deleteTask(
     @Args('input') input: DeleteTaskInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<DeleteTaskResponse> {
     const command = TaskPresentationMapper.deleteInputToDeleteTaskCommand(
       input,
-      'test',
+      payload.userId,
     );
     const result = await this.commandBus.execute(command);
     const output = TaskPresentationMapper.entityToDeleteTaskOutput(result);
@@ -65,12 +74,14 @@ export class TaskResolver {
   }
 
   @Query(() => QueryTaskByIdResponse)
+  @UseGuards(JwtAuthGuard)
   async queryTaskById(
     @Args('input') input: QueryTaskByIdInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<QueryTaskByIdResponse> {
     const query = TaskPresentationMapper.queryTaskByIdInputToTaskByIdQuery(
       input,
-      'test',
+      payload.userId,
     );
     const result = await this.queryBus.execute(query);
     const output = TaskPresentationMapper.entityToQueryTaskByIdOutput(result);
@@ -80,11 +91,12 @@ export class TaskResolver {
   @Query(() => QueryTaskByCategoryIdResponse)
   async queryTasksByCategoryId(
     @Args('input') input: QueryTasksByCategoryIdInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<QueryTaskByCategoryIdResponse> {
     const query =
       TaskPresentationMapper.queryTasksByCategoryIdToTaskByCategoryIdQuery(
         input,
-        'test',
+        payload.userId,
       );
     const result = await this.queryBus.execute(query);
     const output =

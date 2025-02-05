@@ -21,8 +21,9 @@ import { ChangeCategoryNameCommand } from '@project/application/command/category
 export class CategoryPresentationMapper {
   static createCategoryInputToCreateCategoryCommand(
     input: CreateCategoryInput,
+    userId: string,
   ): CreateCategoryCommand {
-    return new CreateCategoryCommand(input.projectId, input.name);
+    return new CreateCategoryCommand(input.projectId, input.name, userId);
   }
   static deleteCategoryInputToDeleteCategoryCommand(
     input: DeleteCategoryInput,
