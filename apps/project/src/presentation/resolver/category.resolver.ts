@@ -1,4 +1,6 @@
+import { JwtAuthGuard } from '@libs/jwt';
 import { ResponseManager } from '@libs/response';
+import { UseGuards } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CategoryPresentationMapper } from '@project/presentation/mapper/category.presentation.mapper';
@@ -23,6 +25,7 @@ export class CategoryResolver {
   ) {}
 
   @Mutation(() => CreateCategoryResponse)
+  @UseGuards(JwtAuthGuard)
   async createCategory(
     @Args('input') input: CreateCategoryInput,
   ): Promise<CreateCategoryResponse> {
@@ -37,6 +40,7 @@ export class CategoryResolver {
   }
 
   @Mutation(() => DeleteCategoryResponse)
+  @UseGuards(JwtAuthGuard)
   async deleteCategory(
     @Args('input') input: DeleteCategoryInput,
   ): Promise<DeleteCategoryResponse> {
@@ -52,6 +56,7 @@ export class CategoryResolver {
   }
 
   @Mutation(() => ChangeCategoryNameResponse)
+  @UseGuards(JwtAuthGuard)
   async changeCategoryName(
     @Args('input') input: ChangeCategoryNameInput,
   ): Promise<ChangeCategoryNameResponse> {
@@ -67,6 +72,7 @@ export class CategoryResolver {
   }
 
   @Query(() => QueryCategoryByIdResponse)
+  @UseGuards(JwtAuthGuard)
   async queryCategoryById(
     @Args('input') input: QueryCategoryByIdInput,
   ): Promise<QueryCategoryByIdResponse> {

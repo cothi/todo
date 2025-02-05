@@ -15,19 +15,24 @@ import {
   UpdateProjectInvitationResponse,
 } from './response/project-invitation.response';
 import { ProjectInvitationType } from './type/project-invitation.type';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard, JwtPayload } from '@libs/jwt';
+import { TokenInfo } from '@libs/decorators';
 
 @Resolver(() => ProjectInvitationType)
 export class ProjectInvitationResolver {
   constructor(private readonly commandBus: CommandBus) {}
 
   @Mutation(() => CreateProjectInvitationResponse)
+  @UseGuards(JwtAuthGuard)
   async createProjectInvitation(
     @Args('input') input: CreateProjectInvitationInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<CreateProjectInvitationResponse> {
     const command =
       ProjectInvitationPresentationMapper.createProjectInvitationInputToCommand(
         input,
-        'test',
+        payload.userId,
       );
     const result = await this.commandBus.execute(command);
     const output =
@@ -38,13 +43,15 @@ export class ProjectInvitationResolver {
   }
 
   @Mutation(() => UpdateProjectInvitationResponse)
+  @UseGuards(JwtAuthGuard)
   async updateProjectInvitation(
     @Args('input') input: UpdateProjectInvitationInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<UpdateProjectInvitationResponse> {
     const command =
       ProjectInvitationPresentationMapper.updateProjectInvitationInputToCommand(
         input,
-        'test2',
+        payload.userId,
       );
     const result = await this.commandBus.execute(command);
     const output =
@@ -56,13 +63,15 @@ export class ProjectInvitationResolver {
   }
 
   @Mutation(() => AcceptProjectInvitationResponse)
+  @UseGuards(JwtAuthGuard)
   async acceptProjectInvitation(
     @Args('input') input: AcceptProjectInvitationInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<AcceptProjectInvitationResponse> {
     const command =
       ProjectInvitationPresentationMapper.acceptProjectInvitationInputToCommand(
         input,
-        'test2',
+        payload.userId,
       );
     const result = await this.commandBus.execute(command);
     const output =
@@ -73,13 +82,15 @@ export class ProjectInvitationResolver {
   }
 
   @Mutation(() => RejectProjectInvitationResponse)
+  @UseGuards(JwtAuthGuard)
   async rejectProjectInvitation(
     @Args('input') input: RejectProjectInvitationInput,
+    @TokenInfo() payload: JwtPayload,
   ): Promise<RejectProjectInvitationResponse> {
     const command =
       ProjectInvitationPresentationMapper.rejectProjectInvitationInputToCommand(
         input,
-        'test2',
+        payload.userId,
       );
     const result = await this.commandBus.execute(command);
     const output =
