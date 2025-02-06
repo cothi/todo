@@ -1,14 +1,12 @@
-import { PrismaService } from '@libs/database';
 import { Injectable } from '@nestjs/common';
 import { ITaskRepository } from '@project/application/port/out/task-repository.port';
-import { Category } from '@project/domain/entity/category.entity';
 import { Task } from '@project/domain/entity/task.entity';
 import { TaskInfraMapper } from '@project/infrastructure/mapper/task.infrastructure.mapper';
+import { ProjectPrismaService } from '@project/infrastructure/prisma/project-prisma.service';
 
 @Injectable()
 export class TaskRepositoryImpl implements ITaskRepository {
-  constructor(private readonly prisma: PrismaService) {}
-
+  constructor(private readonly prisma: ProjectPrismaService) {}
   async storeTask(entity: Task): Promise<void> {
     const data = TaskInfraMapper.toPersistence(entity);
     await this.prisma.task.create({ data });

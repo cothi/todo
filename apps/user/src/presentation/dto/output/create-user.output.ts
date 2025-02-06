@@ -21,7 +21,3 @@ export class CreateUserOutput {
   @Field(() => Date)
   updatedAt: Date;
 }
-@ObjectType()
-export class ApiResponseOfCreateUserOutput extends ApiResponseOf(
-  CreateUserOutput,
-) {}

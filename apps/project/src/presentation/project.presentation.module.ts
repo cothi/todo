@@ -5,9 +5,10 @@ import { CategoryResolver } from '@project/presentation/resolver/category.resolv
 import { ProjectApplicationModule } from '@project/application/project.application.module';
 import { TaskResolver } from './resolver/task.resolver';
 import { ProjectInvitationResolver } from './resolver/project-invitation.resolver';
+import { JwtTokenModule } from '@libs/jwt';
 
 @Module({
-  imports: [CqrsModule, ProjectApplicationModule],
+  imports: [JwtTokenModule, CqrsModule, ProjectApplicationModule],
   providers: [
     ProjectResolver,
     CategoryResolver,

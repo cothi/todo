@@ -10,12 +10,10 @@ RUN npm install
 COPY tsconfig.json tsconfig.json
 COPY nest-cli.json nest-cli.json
 COPY apps/scripts ./apps/scripts
-COPY apps/project/src/infrastructure/prisma/schema.prisma ./apps/user/src/infrastructure/prisma/schema.prisma
+COPY apps/user ./apps/user
 COPY proto ./proto
 
 
-RUN chmod +x ./apps/scripts/start-user.sh
+RUN npx prisma generate --schema=./apps/user/src/infrastructure/prisma/schema.prisma
 
 CMD ["sh","apps/scripts/start-user.sh"]
-
-# TODO: production 환경 도커 파일 작성

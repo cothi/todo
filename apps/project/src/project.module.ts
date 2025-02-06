@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ProjectPresentationModule } from './presentation/project.presentation.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GraphQLExceptionFilter } from '@libs/filter';
+import { JwtTokenModule } from '@libs/jwt';
 
 @Module({
   imports: [

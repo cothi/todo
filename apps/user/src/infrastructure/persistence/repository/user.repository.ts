@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@libs/database';
 import {
   DeleteUserArgs,
   FindUserByIdArgs,
@@ -7,11 +6,12 @@ import {
 } from '@user/application/port/out/user-repository.port';
 import { UserMapper } from '@user/infrastructure/mapper/user.mapper';
 import { User } from '@user/domain/entity/user.entity';
+import { UserPrismaService } from '@user/infrastructure/prisma/user-prisma.service';
 
 // 유저 생성, 삭제, 조회, 업데이트
 @Injectable()
 export class UserRepositoryImpl implements IUserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: UserPrismaService) {}
 
   async createUser(args: User): Promise<void> {
     const data = UserMapper.toPersistence(args);

@@ -6,8 +6,3 @@ export class UpdateUserOutput {
   @Field()
   userId: string;
 }
-
-@ObjectType()
-export class ApiResponseOfUpdateUserOutput extends ApiResponseOf(
-  UpdateUserOutput,
-) {}

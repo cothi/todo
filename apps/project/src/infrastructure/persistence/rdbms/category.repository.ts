@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ICategoryRepository } from '@project/application/port/out/category-repository.port';
-import { PrismaService } from '@libs/database';
 import { Category } from '@project/domain/entity/category.entity';
 import {
   CategoryInfraMapper,
   CategoryRecord,
 } from '@project/infrastructure/mapper/category.infrastructure.mapper';
+import { ProjectPrismaService } from '@project/infrastructure/prisma/project-prisma.service';
 
 @Injectable()
 export class CategoryRepositoryImpl implements ICategoryRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: ProjectPrismaService) {}
 
   async storeCategory(entity: Category): Promise<void> {
     const data = CategoryInfraMapper.createToPersistence(entity);

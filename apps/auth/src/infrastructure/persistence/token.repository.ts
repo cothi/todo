@@ -3,14 +3,14 @@ import {
   FindTokenByRefreshTokenArgs,
   ITokensRepository,
 } from '@auth/application/port/out/token-repository.port';
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@libs/database';
-import { TokenMapper } from '@auth/infrastructure/persistence/mapper/token.mapper';
 import { Token } from '@auth/domain/entities/token.entity';
+import { TokenMapper } from '@auth/infrastructure/persistence/mapper/token.mapper';
+import { Injectable } from '@nestjs/common';
+import { AuthPrismaService } from '../prisma/auth-prisma.service';
 
 @Injectable()
 export class TokenRepositoryImpl implements ITokensRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: AuthPrismaService) {}
 
   async save(entity: Token): Promise<void> {
     const data = TokenMapper.toPersistence(entity);

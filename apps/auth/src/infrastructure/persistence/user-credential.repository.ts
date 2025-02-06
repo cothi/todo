@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@libs/database';
 import {
   DeleteUserCredentialArgs,
   FindUserCredentialArgs,
@@ -8,10 +7,11 @@ import {
 } from '@auth/application/port/out/user-credential-repository.port';
 import { UserCredentialMapper } from '@auth/infrastructure/persistence/mapper/user-credential.mapper';
 import { UserCredential } from '@auth/domain/entities/user-credential.entity';
+import { AuthPrismaService } from '../prisma/auth-prisma.service';
 
 @Injectable()
 export class UserCredentialRepositoryImpl implements IUserCredentialRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: AuthPrismaService) {}
   async createUserCredential(entity: UserCredential): Promise<void> {
     const data = UserCredentialMapper.toPersistence(entity);
     await this.prisma.userCredentials.create({ data });

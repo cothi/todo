@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
 import { UserRepositorySymbol } from '@user/application/port/out/user-repository.port';
 import { UserRepositoryImpl } from '@user/infrastructure/persistence/repository/user.repository';
-import { DatabaseModule } from '@libs/database';
 import { ClientGrpc, ClientsModule, Transport } from '@nestjs/microservices';
 import {
   USER_GRPC_CLIENT_SYMBOL,
   USER_GRPC_SERVICE_SYMBOL,
 } from '@user/infrastructure/adapter/grpc/options/user-grpc-client.options';
 import { AuthMicroservice } from '@libs/grpc';
+import { UserPrismaService } from './prisma/user-prisma.service';
 
 @Module({
   imports: [
-    DatabaseModule,
     ClientsModule.register([
       {
         name: USER_GRPC_CLIENT_SYMBOL,
@@ -25,6 +24,7 @@ import { AuthMicroservice } from '@libs/grpc';
     ]),
   ],
   providers: [
+    UserPrismaService,
     {
       provide: UserRepositorySymbol,
       useClass: UserRepositoryImpl,

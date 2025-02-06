@@ -1,4 +1,3 @@
-import { DatabaseModule } from '@libs/database';
 import { Module } from '@nestjs/common';
 import { CategoryRepositorySymbol } from '@project/application/port/out/category-repository.port';
 import { ProjectMembershipRepositorySymbol } from '@project/application/port/out/project-membership-repository.port';
@@ -10,10 +9,12 @@ import { ProjectRepositoryImpl } from '@project/infrastructure/persistence/rdbms
 import { ProjectInvitationRepositoryImpl } from './persistence/rdbms/project-invitation.repository';
 import { ProjectMembershipRepositoryImpl } from './persistence/rdbms/project-membership.repository';
 import { TaskRepositoryImpl } from './persistence/rdbms/task.repository';
+import { ProjectPrismaService } from './prisma/project-prisma.service';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [],
   providers: [
+    ProjectPrismaService,
     {
       provide: ProjectRepositorySymbol,
       useClass: ProjectRepositoryImpl,

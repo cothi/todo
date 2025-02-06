@@ -121,7 +121,6 @@ docker_compose_operation() {
 update_user_schema() {
     echo -e "${GREEN}Updating user database schema...${NC}"
 
-
     echo "Cleaning up previous migrations..."
     rm -rf apps/user/src/infrastructure/prisma/migrations
 
@@ -129,7 +128,6 @@ update_user_schema() {
     npx prisma generate --schema=apps/user/src/infrastructure/prisma/schema.prisma
 
     echo "Creating and applying migrations..."
-    # --force 플래그를 추가하여 확인 프롬프트 건너뛰기
     npx prisma migrate reset --schema=apps/user/src/infrastructure/prisma/schema.prisma --force
 
     echo -e "${GREEN}User database schema update completed!${NC}"
@@ -139,26 +137,21 @@ update_user_schema() {
 update_auth_schema() {
     echo -e "${GREEN}Updating auth database schema...${NC}"
 
-
-
-    #echo "Cleaning up previous migrations..."
-    #rm -rf apps/auth/src/infrastructure/prisma/migrations
+    echo "Cleaning up previous migrations..."
+    rm -rf apps/auth/src/infrastructure/prisma/migrations
 
     echo "Generating Prisma client..."
     npx prisma generate --schema=apps/auth/src/infrastructure/prisma/schema.prisma
 
     echo "Creating and applying migrations..."
-    # --force 플래그를 추가하여 확인 프롬프트 건너뛰기
     npx prisma migrate reset --schema=apps/auth/src/infrastructure/prisma/schema.prisma --force
 
     echo -e "${GREEN}Auth database schema update completed!${NC}"
 }
 
-
-# Prisma 스키마 업데이트 함수 - 인증 DB
+# Prisma 스키마 업데이트 함수 - 프로젝트 DB
 update_project_schema() {
-    echo -e "${GREEN}Updating auth database schema...${NC}"
-
+    echo -e "${GREEN}Updating project database schema...${NC}"
 
     echo "Cleaning up previous migrations..."
     rm -rf apps/project/src/infrastructure/prisma/migrations
@@ -167,13 +160,20 @@ update_project_schema() {
     npx prisma generate --schema=apps/project/src/infrastructure/prisma/schema.prisma
 
     echo "Creating and applying migrations..."
-    # --force 플래그를 추가하여 확인 프롬프트 건너뛰기
     npx prisma migrate reset --schema=apps/project/src/infrastructure/prisma/schema.prisma --force
-    npx prisma migrate dev --schema=apps/project/src/infrastructure/prisma/schema.prisma --name init
 
-    echo -e "${GREEN}Auth database schema update completed!${NC}"
+    echo -e "${GREEN}Project database schema update completed!${NC}"
 }
 
+# 모든 스키마 업데이트
+update_all_schemas() {
+    update_user_schema
+    update_auth_schema
+    update_project_schema
+}
+
+# 기본적으로 모든 스키마 업데이트 실행
+update_all_schemas
 
 # 메인 실행 함수
 main() {
@@ -209,9 +209,7 @@ main() {
                     update_project_schema
                     ;;
                 all)
-                    update_user_schema
-                    update_auth_schema
-                    update_project_schema
+                    update_all_schemas
                     ;;
             esac
             ;;

@@ -1,12 +1,12 @@
 import { Project } from '@project/domain/entity/project.entity';
-import { PrismaService } from '@libs/database';
 import { ProjectInfraMapper } from '@project/infrastructure/mapper/project.infrastructure.mapper';
 import { IProjectRepository } from '@project/application/port/out/project-repository.port';
 import { Injectable } from '@nestjs/common';
+import { ProjectPrismaService } from '@project/infrastructure/prisma/project-prisma.service';
 
 @Injectable()
 export class ProjectRepositoryImpl implements IProjectRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: ProjectPrismaService) {}
   async createProject(entity: Project): Promise<void> {
     const data = ProjectInfraMapper.createToPersistence(entity);
     await this.prisma.project.create({

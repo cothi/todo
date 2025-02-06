@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProjectModule } from '@project/project.module';
+import { UserModule } from '../../user/src/user.module';
 import { GraphQLTestHelper } from './graphql-helper/graphql.helper';
 import { ProjectTestHelper } from './graphql-helper/operations/project.operations';
 
@@ -12,7 +13,7 @@ describe('project resolver (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [ProjectModule],
+      imports: [ProjectModule, UserModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
