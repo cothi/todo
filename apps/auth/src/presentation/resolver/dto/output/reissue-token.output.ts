@@ -4,12 +4,6 @@ import { ApiResponseOf } from '@libs/response';
 @ObjectType()
 export class ReissueTokenOutput {
   @Field()
-  userId: string;
-
-  @Field()
-  refreshToken: string;
-
-  @Field()
   accessToken: string;
 }
 

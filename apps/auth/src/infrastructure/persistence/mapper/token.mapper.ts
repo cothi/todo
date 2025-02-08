@@ -18,9 +18,9 @@ export class TokenMapper {
       expiresAt: entity.expiresAt,
       updatedAt: entity.updatedAt,
       createdAt: entity.createdAt,
-      refreshToken: entity.refreshToken,
+      refreshToken: entity.hashedRefreshToken,
       isRevoked: entity.isRevoked,
-      accessToken: entity.accessToken,
+      accessToken: entity.hashedAccessToken,
     };
   }
 
@@ -31,9 +31,9 @@ export class TokenMapper {
       expiresAt: record.expiresAt,
       updatedAt: record.updatedAt,
       createdAt: record.createdAt,
-      refreshToken: record.refreshToken,
       isRevoked: record.isRevoked,
-      accessToken: record.accessToken,
+      hashedRefreshToken: record.refreshToken,
+      hashedAccessToken: record.accessToken,
     });
   }
 }

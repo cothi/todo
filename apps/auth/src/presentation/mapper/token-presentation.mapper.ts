@@ -1,7 +1,7 @@
-import { ReissueTokenInput } from '@auth/presentation/resolver/dto/input/reissue-token.input';
 import { ReissueTokenCommand } from '@auth/application/commands/reissue-token.command';
-import { Token } from '@auth/domain/entities/token.entity';
+import { ReissueTokenInput } from '@auth/presentation/resolver/dto/input/reissue-token.input';
 import { ReissueTokenOutput } from '@auth/presentation/resolver/dto/output/reissue-token.output';
+import { AccessToken } from '@libs/jwt';
 
 export class TokenPresentationMapper {
   static toReissueTokenCommand(input: ReissueTokenInput): ReissueTokenCommand {
@@ -10,11 +10,9 @@ export class TokenPresentationMapper {
     };
   }
 
-  static resultToTokenReissueOutput(data: Token): ReissueTokenOutput {
+  static resultToTokenReissueOutput(data: AccessToken): ReissueTokenOutput {
     return {
-      userId: data.userId,
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
+      accessToken: data.token,
     };
   }
 }

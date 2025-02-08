@@ -10,13 +10,17 @@ import { User } from '@user/domain/entity/user.entity';
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   constructor(private readonly userService: UserService) {}
   async execute(command: CreateUserCommand): Promise<User> {
-    return await this.userService.createUser(
-      new CreateUserParam(
-        command.email,
-        command.nickname,
-        command.password,
-        command.birthday,
-      ),
-    );
+    try {
+      return await this.userService.createUser(
+        new CreateUserParam(
+          command.email,
+          command.nickname,
+          command.password,
+          command.birthday,
+        ),
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 }

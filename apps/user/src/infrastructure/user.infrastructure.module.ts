@@ -1,12 +1,12 @@
+import { AuthMicroservice } from '@libs/grpc';
 import { Module } from '@nestjs/common';
-import { UserRepositorySymbol } from '@user/application/port/out/user-repository.port';
-import { UserRepositoryImpl } from '@user/infrastructure/persistence/repository/user.repository';
 import { ClientGrpc, ClientsModule, Transport } from '@nestjs/microservices';
+import { UserRepositorySymbol } from '@user/application/port/out/user-repository.port';
 import {
   USER_GRPC_CLIENT_SYMBOL,
   USER_GRPC_SERVICE_SYMBOL,
 } from '@user/infrastructure/adapter/grpc/options/user-grpc-client.options';
-import { AuthMicroservice } from '@libs/grpc';
+import { UserRepositoryImpl } from '@user/infrastructure/persistence/repository/user.repository';
 import { UserPrismaService } from './prisma/user-prisma.service';
 
 @Module({
@@ -18,7 +18,8 @@ import { UserPrismaService } from './prisma/user-prisma.service';
         options: {
           package: 'auth',
           protoPath: './proto/auth.proto',
-          url: 'auth:50051',
+          url:
+            process.env.NODE_ENV === 'test' ? 'localhost:50052' : 'auth:50051',
         },
       },
     ]),

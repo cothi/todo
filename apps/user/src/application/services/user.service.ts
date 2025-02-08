@@ -29,7 +29,6 @@ export class UserService {
       birthday: param.birthday,
     });
     await this.userRepository.createUser(user);
-    console.log('hello');
     const response = await firstValueFrom(
       this.authClient.storeUserCredential({
         email: user.email,

@@ -1,4 +1,3 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ReissueTokenCommand } from '@auth/application/commands/reissue-token.command';
 import { TokenService } from '@auth/application/services/token.service';
 import {
@@ -6,12 +5,13 @@ import {
   ErrorCode,
   errorFactory,
 } from '@libs/exception';
-import { Token } from '@auth/domain/entities/token.entity';
+import { AccessToken } from '@libs/jwt';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(ReissueTokenCommand)
 export class ReissueTokenHandler implements ICommandHandler {
   constructor(private readonly tokenService: TokenService) {}
-  async execute(command: ReissueTokenCommand): Promise<Token> {
+  async execute(command: ReissueTokenCommand): Promise<AccessToken> {
     try {
       return await this.tokenService.reissueTokens({
         refreshToken: command.refreshToken,

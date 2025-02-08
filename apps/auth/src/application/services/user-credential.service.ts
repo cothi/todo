@@ -36,7 +36,7 @@ export class UserCredentialService {
       await this.userCredentialRepository.findUserCredentials({
         userId: param.userId,
       });
-    if (!userCredential) {
+    if (userCredential) {
       throw errorFactory(ErrorCode.USER_ALREADY_EXISTS);
     }
     const createdUserCredential = UserCredential.create({

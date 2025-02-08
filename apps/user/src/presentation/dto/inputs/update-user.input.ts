@@ -1,7 +1,7 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateUserInput {
+export class BaseUserInput {
   @Field(() => String)
   nickname: string;
 
@@ -11,3 +11,6 @@ export class UpdateUserInput {
   @Field(() => String)
   email: string;
 }
+
+@InputType()
+export class UpdateUserInput extends PartialType(BaseUserInput) {}

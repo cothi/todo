@@ -10,6 +10,6 @@ export const authGrpcServerOptions: GrpcOptions = {
       __dirname,
       '../../../../../../../../../../proto/auth.proto',
     ),
-    url: 'auth:50051',
+    url: '0.0.0.0:50051',
   },
 };

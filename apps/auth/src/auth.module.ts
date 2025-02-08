@@ -19,8 +19,6 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     }),
     JwtTokenModule,
     AuthPresentationModule,
-    AuthApplicationModule,
-    AuthInfrastructureModule,
   ],
   providers: [],
   exports: [],

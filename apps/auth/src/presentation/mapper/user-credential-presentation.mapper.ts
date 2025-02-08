@@ -11,11 +11,11 @@ export class UserCredentialPresentationMapper {
   static toStoreUserCredentialCommand(
     request: StoreUserCredentialRequest,
   ): StoreUserCredentialCommand {
-    return {
-      userId: request.userId,
-      email: request.email,
-      passwordHash: request.passwordHash,
-    };
+    return new StoreUserCredentialCommand(
+      request.userId,
+      request.email,
+      request.passwordHash,
+    );
   }
 
   static toUpdateUserCredentialCommand(

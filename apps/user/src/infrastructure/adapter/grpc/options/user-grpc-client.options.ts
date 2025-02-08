@@ -9,6 +9,6 @@ export const userGrpcClientOptions: ClientOptions = {
   options: {
     package: 'auth',
     protoPath: join(__dirname, '../../../proto/auth.proto'),
-    url: 'auth:50051',
+    url: 'localhost:50051',
   },
 };

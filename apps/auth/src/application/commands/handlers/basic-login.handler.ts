@@ -6,8 +6,8 @@ import {
   ErrorCode,
   errorFactory,
 } from '@libs/exception';
-import { Token } from '@auth/domain/entities/token.entity';
 import { UserCredentialService } from '@auth/application/services/user-credential.service';
+import { TokenPair } from '@libs/jwt';
 
 @CommandHandler(BasicLoginCommand)
 export class BasicLoginHandler implements ICommandHandler {
@@ -15,7 +15,7 @@ export class BasicLoginHandler implements ICommandHandler {
     private readonly userAuthService: UserCredentialService,
     private readonly tokenService: TokenService,
   ) {}
-  async execute(command: BasicLoginCommand): Promise<Token> {
+  async execute(command: BasicLoginCommand): Promise<TokenPair> {
     try {
       const credential = await this.userAuthService.validatePassword({
         email: command.email,
@@ -25,6 +25,7 @@ export class BasicLoginHandler implements ICommandHandler {
         userId: credential.userId,
       });
     } catch (err) {
+      console.log(err);
       if (err instanceof BaseBusinessException) {
         throw errorFactory(err.errorCode);
       }

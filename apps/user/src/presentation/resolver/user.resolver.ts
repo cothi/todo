@@ -33,6 +33,7 @@ export class UserResolver {
   }
 
   @Mutation(() => UpdateUserResponse)
+  @UseGuards(JwtAuthGuard)
   async updateUser(
     @Args('input') input: UpdateUserInput,
     @TokenInfo() payload: JwtPayload,

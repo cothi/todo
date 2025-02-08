@@ -1,8 +1,10 @@
 import { ApiResponseOf } from '@libs/response';
 import { ObjectType } from '@nestjs/graphql';
-import { CreateUserOutput } from '../dto/output/create-user.output';
-import { UpdateUserOutput } from '../dto/output/update-user.output';
-import { DeleteUserOutput } from '../dto/output/delete-user.output';
+import {
+  CreateUserOutput,
+  DeleteUserOutput,
+  UpdateUserOutput,
+} from '../dto/output/user.output';
 
 @ObjectType()
 export class CreateUserResponse extends ApiResponseOf(CreateUserOutput) {}

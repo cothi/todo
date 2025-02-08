@@ -25,7 +25,7 @@ export class UserCredentialMapper {
     return UserCredential.fromPersistence({
       id: record.id,
       email: record.email,
-      userId: record.id,
+      userId: record.userId,
       updatedAt: record.updatedAt,
       createdAt: record.createdAt,
       passwordHash: record.passwordHash,

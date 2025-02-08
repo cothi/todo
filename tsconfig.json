@@ -31,7 +31,7 @@
         "apps/auth/src/*"
       ],
       "@project": [
-        "apps/project/src",
+        "apps/project/src"
       ],
       "@project/*": [
         "apps/project/src/*"
@@ -107,6 +107,12 @@
       ],
       "@libs/grpc/*": [
         "libs/grpc/src/*"
+      ],
+      "@libs/entity": [
+        "libs/entity/src"
+      ],
+      "@libs/entity/*": [
+        "libs/entity/src/*"
       ]
     }
   }

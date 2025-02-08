@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
+  AccessToken,
+  AccessTokenPayload,
   JwtPairPayload,
   JwtPayload,
   TokenPair,
@@ -47,8 +49,22 @@ export class JwtTokenService {
     };
   }
 
+  generateAcceeToken(payload: AccessTokenPayload): AccessToken {
+    const expiresIn = this.getExpirationTime(TokenEnum.ACCESS);
+    const token = this.jwtService.sign(payload, { expiresIn });
+    const decoded = this.jwtService.decode(token) as {
+      exp: number;
+      iat: number;
+    };
+    const expiresAt = new Date(decoded.exp * 1000);
+    return {
+      expiresAt: expiresAt,
+      token: token,
+    };
+  }
+
   verifyToken(token: string) {
-    this.jwtService.verify(token);
+    return this.jwtService.verify(token);
   }
   verifyRefreshToken(token: string) {
     const payload: JwtPayload = this.jwtService.verify(token);

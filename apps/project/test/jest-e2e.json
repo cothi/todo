@@ -7,10 +7,11 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^@user/(.*)$": "<rootDir>/../../user/src/$1",
-    "^@project/(.*)$": "<rootDir>/../src/$1",
-    "^@libs/(.*)$": "<rootDir>../../../libs/$1/src"
-  },
+  "^@user/(.*)$": "<rootDir>/../../user/src/$1",
+  "^@auth/(.*)$": "<rootDir>/../../auth/src/$1",
+  "^@project/(.*)$": "<rootDir>/../src/$1",
+  "^@libs/(.*)$": "<rootDir>../../../libs/$1/src"
+},
   "modulePaths": ["<rootDir>/../../"],
   "setupFiles": ["<rootDir>/jest-e2e.setup.ts"]
 }

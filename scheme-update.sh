@@ -172,8 +172,6 @@ update_all_schemas() {
     update_project_schema
 }
 
-# 기본적으로 모든 스키마 업데이트 실행
-update_all_schemas
 
 # 메인 실행 함수
 main() {

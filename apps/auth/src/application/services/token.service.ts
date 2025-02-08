@@ -1,14 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { JwtTokenService } from '@libs/jwt';
 import { CreateTokenParam } from '@auth/application/dto/params/create-token.param';
-import { Token } from '@auth/domain/entities/token.entity';
-import { ReissueTokenParam } from '@auth/application/dto/params/update-access-token.param';
-import { ApplicationException, ErrorCode } from '@libs/exception';
 import { RevokeTokenParam } from '@auth/application/dto/params/revoke-token.param';
+import { ReissueTokenParam } from '@auth/application/dto/params/update-access-token.param';
 import {
   ITokensRepository,
   TokenRepositorySymbol,
 } from '@auth/application/port/out/token-repository.port';
+import { Token } from '@auth/domain/entities/token.entity';
+import { TokenPolicyLogic } from '@auth/domain/logic/token-policy.logic';
+import { ApplicationException, ErrorCode } from '@libs/exception';
+import { AccessToken, JwtTokenService, TokenEnum, TokenPair } from '@libs/jwt';
+import { Inject, Injectable } from '@nestjs/common';
+import { createHash } from 'crypto';
 
 /**
  * 토큰의 유효성 관련 서비스를 제공하는 클래스입니다.
@@ -25,33 +27,38 @@ export class TokenService {
    * 새로운 토큰을 저장합니다.
    * @param param - 새로운 토큰을 저장할 필요한 정보를 담은 파리미터
    */
-  async createToken(param: CreateTokenParam): Promise<Token> {
+  async createToken(param: CreateTokenParam): Promise<TokenPair> {
     // 토큰 저장
-    const token = this.issueToken(param.userId);
+    const tokenPair = this.issueTokenPair(param.userId);
+    const token = Token.create({
+      expiresAt: tokenPair.refreshTokenExpires,
+      hashedAccessToken: this.hash(tokenPair.accessToken),
+      hashedRefreshToken: this.hash(tokenPair.refreshToken),
+      userId: param.userId,
+    });
     await this.tokenRepository.save(token);
-    return token;
+    return tokenPair;
   }
 
   /**
    * 저장된 토큰의 정보를 업데이트합니다.
    * @param param - 저장된 토큰의 업데이트할 정보를 담은 파라미터
    */
-  async reissueTokens(param: ReissueTokenParam): Promise<Token> {
-    this.jwtTokenService.verifyRefreshToken(param.refreshToken);
+  async reissueTokens(param: ReissueTokenParam): Promise<AccessToken> {
     // refresh token 검증 및 블랙리스트 확인
     const token = await this.tokenRepository.findTokenByRefreshToken({
       refreshToken: param.refreshToken,
     });
-    if (!token || token.isRevoked || token.isExpired()) {
+    if (!token) {
       throw new ApplicationException(ErrorCode.UNAUTHORIZED);
     }
-    // 토큰 무효화 및 DB 반영
-    token.revokeToken();
-    await this.tokenRepository.update(token);
+
+    this.jwtTokenService.verifyRefreshToken(param.refreshToken);
 
     // 토큰 재발급 및 DB 반영
-    const reissuedToken = this.issueToken(token.userId);
-    await this.tokenRepository.save(reissuedToken);
+    const reissuedToken = this.reissueAccessToken(token.userId);
+    TokenPolicyLogic.changeAccessToken(token, reissuedToken.token);
+    await this.tokenRepository.update(token);
     return reissuedToken;
   }
 
@@ -81,16 +88,19 @@ export class TokenService {
     await this.tokenRepository.deleteAllRevokeExpiredToken();
   }
 
-  private issueToken(userId: string): Token {
-    const tokenPair = this.jwtTokenService.generateTokenPair({
+  private issueTokenPair(userId: string): TokenPair {
+    return this.jwtTokenService.generateTokenPair({
       userId: userId,
     });
+  }
+  private reissueAccessToken(userId: string): AccessToken {
+    return this.jwtTokenService.generateToken({
+      type: TokenEnum.ACCESS,
+      userId: userId,
+    });
+  }
 
-    return Token.create({
-      userId: userId,
-      accessToken: tokenPair.accessToken,
-      refreshToken: tokenPair.refreshToken,
-      expiresAt: tokenPair.refreshTokenExpires,
-    });
+  private hash(str: string): string {
+    return createHash('sha256').update(str).digest('hex');
   }
 }

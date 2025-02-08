@@ -17,11 +17,12 @@
     "start:prod": "node dist/apps/todogebi/main",
     "proto:gen": "protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./libs/grpc/src --ts_proto_opt=nestJs=true ./proto/*.proto",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --config ./apps/project/test/jest-e2e.json",
+    "test": "jest --config ./apps/user/test/jest-e2e.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/project/test/jest-e2e.json --runInBand"
+    "test:e2e": "jest --config ./apps/user/test/jest-e2e.json --runInBand",
+    "test:e2e:user": "jest --config ./apps/user/test/jest-e2e.json --runInBand"
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
@@ -101,10 +102,9 @@
     ],
     "rootDir": ".",
     "roots": [
-      "<rootDir>/src",
-      "<rootDir>/test",
-      "<rootDir>/libs/",
-      "<rootDir>/apps/"
+      "<rootDir>/apps",
+      "<rootDir>/libs",
+      "<rootDir>/libs/"
     ],
     "testRegex": ".*\\.(spec|e2e-spec)\\.ts$",
     "transform": {
@@ -118,7 +118,8 @@
       "^libs/decorators(|/.*)$": "<rootDir>/libs/decorators/src/$1",
       "^libs/common(|/.*)$": "<rootDir>/libs/common/src/$1",
       "^@libs/test(|/.*)$": "<rootDir>/libs/test/src/$1",
-      "^@libs/grpc(|/.*)$": "<rootDir>/libs/grpc/src/$1"
+      "^@libs/grpc(|/.*)$": "<rootDir>/libs/grpc/src/$1",
+      "^@libs/entity(|/.*)$": "<rootDir>/libs/entity/src/$1"
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

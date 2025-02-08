@@ -12,7 +12,7 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
   async execute(command: UpdateUserCommand): Promise<User> {
     return await this.userService.updateUser(
       new UpdateUserParam(
-        command.id,
+        command.userId,
         command.email,
         command.nickname,
         command.birthday,

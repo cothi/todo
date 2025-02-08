@@ -1,90 +1,98 @@
-import { v4 as uuid } from 'uuid';
+import { BaseEntity, BaseEntityProps } from '@libs/entity';
 import { DomainException, ErrorCode } from '@libs/exception';
-interface TokenProps {
-  userId: string;
-  accessToken: string;
-  refreshToken: string;
-  expiresAt: Date;
-}
-interface TokenPropsFromPersistence {
-  id: string;
-  userId: string;
-  accessToken: string;
-  refreshToken: string;
+import { v4 as uuid } from 'uuid';
+
+export type Keys<T> = keyof T;
+export type OmitType<T, K extends Keys<T>> = Omit<T, K>;
+
+export type TokenMutableProps = {
+  hashedAccessToken: string;
   isRevoked: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  expiresAt: Date;
-}
-export class Token {
-  constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    private _accessToken: string,
-    private _refreshToken: string,
-    private _isRevoked: boolean,
-    private _createdAt: Date,
-    private _updatedAt: Date,
-    private _expiresAt: Date,
-  ) {}
+};
+export type TokenImutableProps = {
+  readonly userId: string;
+  readonly hashedRefreshToken: string;
+  readonly expiresAt: Date;
+};
 
-  static create(props: TokenProps): Token {
+export type TokenProps = TokenMutableProps &
+  TokenImutableProps &
+  BaseEntityProps;
+export type CreateTokenProps = Omit<
+  TokenMutableProps & TokenImutableProps,
+  'isRevoke'
+>;
+
+export class Token extends BaseEntity<TokenProps> {
+  static create(props: OmitType<CreateTokenProps, 'isRevoked'>): Token {
     const now = new Date();
-    return new Token(
-      uuid(),
-      props.userId,
-      props.accessToken,
-      props.refreshToken,
-      false,
-      now,
-      now,
-      props.expiresAt,
-    );
+    const id = uuid();
+    const isRevoked = false;
+    return new Token({
+      createdAt: now,
+      updatedAt: now,
+      expiresAt: props.expiresAt,
+      hashedAccessToken: props.hashedAccessToken,
+      hashedRefreshToken: props.hashedRefreshToken,
+      id: id,
+      isRevoked: isRevoked,
+      userId: props.userId,
+    });
   }
 
-  static fromPersistence(props: TokenPropsFromPersistence): Token {
-    return new Token(
-      props.id,
-      props.userId,
-      props.accessToken,
-      props.refreshToken,
-      props.isRevoked,
-      props.createdAt,
-      props.updatedAt,
-      props.expiresAt,
-    );
+  static fromPersistence(props: TokenProps): Token {
+    return new Token({
+      createdAt: props.createdAt,
+      expiresAt: props.expiresAt,
+      hashedAccessToken: props.hashedAccessToken,
+      hashedRefreshToken: props.hashedRefreshToken,
+      id: props.id,
+      isRevoked: props.isRevoked,
+      updatedAt: props.updatedAt,
+      userId: props.userId,
+    });
   }
 
-  get accessToken() {
-    return this._accessToken;
+  update(partialProps: Partial<TokenMutableProps>): void {
+    Object.assign(this.props, partialProps);
+    this.updateTimestamp();
   }
-  get refreshToken() {
-    return this._refreshToken;
+
+  get userId() {
+    return this.props.userId;
   }
   get createdAt() {
-    return this._createdAt;
+    return this.props.createdAt;
   }
 
   get updatedAt() {
-    return this._updatedAt;
+    return this.props.updatedAt;
   }
 
   get expiresAt() {
-    return this._expiresAt;
+    return this.props.expiresAt;
   }
 
   get isRevoked() {
-    return this._isRevoked;
+    return this.props.isRevoked;
+  }
+
+  get hashedRefreshToken() {
+    return this.props.hashedAccessToken;
+  }
+
+  get hashedAccessToken() {
+    return this.props.hashedAccessToken;
   }
 
   revokeToken(): void {
-    if (this._isRevoked) {
+    if (this.props.isRevoked) {
       throw new DomainException(ErrorCode.UNAUTHORIZED);
     }
-    this._isRevoked = true;
-    this._updatedAt = new Date();
+    this.props.isRevoked = true;
+    this.props.updatedAt = new Date();
   }
   isExpired(): boolean {
-    return new Date() > this._expiresAt;
+    return new Date() > this.props.expiresAt;
   }
 }

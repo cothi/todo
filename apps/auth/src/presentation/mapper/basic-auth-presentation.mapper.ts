@@ -5,6 +5,7 @@ import { BasicLogoutCommand } from '@auth/application/commands/basic-logout.comm
 import { Token } from '@auth/domain/entities/token.entity';
 import { LoginOutput } from '@auth/presentation/resolver/dto/output/login.output';
 import { LogoutOutput } from '@auth/presentation/resolver/dto/output/logout.output';
+import { TokenPair } from '@libs/jwt';
 
 export class BasicAuthPresentationMapper {
   static toBasicLogoutCommand(input: LogoutInput): BasicLogoutCommand {
@@ -15,11 +16,10 @@ export class BasicAuthPresentationMapper {
     return new BasicLoginCommand(input.email, input.password);
   }
 
-  static resultToLoginOutput(result: Token): LoginOutput {
+  static resultToLoginOutput(result: TokenPair): LoginOutput {
     return {
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
-      userId: result.userId,
     };
   }
 
