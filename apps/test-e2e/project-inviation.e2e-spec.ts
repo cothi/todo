@@ -1,9 +1,9 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProjectModule } from '@project/project.module';
+import { ProjectInvitationTestHelper } from '../project/test/graphql-helper/operations/project-invitation.operations';
+import { ProjectTestHelper } from '../project/test/graphql-helper/operations/project.operations';
 import { GraphQLTestHelper } from './graphql-helper/graphql.helper';
-import { ProjectInvitationTestHelper } from './graphql-helper/operations/project-invitation.operations';
-import { ProjectTestHelper } from './graphql-helper/operations/project.operations';
 
 describe('ProjectInviationResolver (e2e)', () => {
   let app: INestApplication;

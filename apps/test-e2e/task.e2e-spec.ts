@@ -1,10 +1,10 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProjectModule } from '@project/project.module';
+import { ProjectTestHelper } from '../project/test/graphql-helper/operations/project.operations';
+import { CategoryTestHelper } from '../project/test/graphql-helper/operations/category.operations';
+import { TaskTestHelper } from '../project/test/graphql-helper/operations/task.operations';
 import { GraphQLTestHelper } from './graphql-helper/graphql.helper';
-import { ProjectTestHelper } from './graphql-helper/operations/project.operations';
-import { CategoryTestHelper } from './graphql-helper/operations/category.operations';
-import { TaskTestHelper } from './graphql-helper/operations/task.operations';
 
 describe('Task resolver (e2e)', () => {
   let app: INestApplication;

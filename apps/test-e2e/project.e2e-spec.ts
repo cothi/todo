@@ -1,9 +1,9 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProjectModule } from '@project/project.module';
-import { UserModule } from '../../user/src/user.module';
 import { GraphQLTestHelper } from './graphql-helper/graphql.helper';
 import { ProjectTestHelper } from './graphql-helper/operations/project.operations';
+import { UserModule } from '@user/user.module';
 
 describe('project resolver (e2e)', () => {
   let app: INestApplication;

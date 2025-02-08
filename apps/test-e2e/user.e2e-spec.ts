@@ -1,9 +1,9 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserModule } from '../src/user.module';
+import { UserModule } from '../user/src/user.module';
 import { GraphQLTestHelper } from './graphql-helper/graphql.helper';
 import { UserTestHelper } from './graphql-helper/operations/user.operations';
-import { AuthModule } from '../../auth/src/auth.module';
+import { AuthModule } from '../auth/src/auth.module';
 import {
   GrpcOptions,
   MicroserviceOptions,
@@ -12,7 +12,6 @@ import {
 import { AUTH_PACKAGE_NAME } from '@libs/grpc';
 import { join } from 'path';
 import { AuthTestHelper } from './graphql-helper/operations/auth.operations';
-import { response } from 'express';
 
 describe('User Resolver e2e', () => {
   let app: INestApplication;
@@ -28,7 +27,7 @@ describe('User Resolver e2e', () => {
       transport: Transport.GRPC,
       options: {
         package: AUTH_PACKAGE_NAME,
-        protoPath: join(__dirname, '../../../proto/auth.proto'),
+        protoPath: join(__dirname, '../../proto/auth.proto'),
         url: '0.0.0.0:50052',
       },
     };
