@@ -128,7 +128,7 @@ update_user_schema() {
     npx prisma generate --schema=apps/user/src/infrastructure/prisma/schema.prisma
 
     echo "Creating and applying migrations..."
-    npx prisma migrate reset --schema=apps/user/src/infrastructure/prisma/schema.prisma --force
+    npx prisma migrate dev --schema=apps/user/src/infrastructure/prisma/schema.prisma --name init
 
     echo -e "${GREEN}User database schema update completed!${NC}"
 }
@@ -144,7 +144,7 @@ update_auth_schema() {
     npx prisma generate --schema=apps/auth/src/infrastructure/prisma/schema.prisma
 
     echo "Creating and applying migrations..."
-    npx prisma migrate reset --schema=apps/auth/src/infrastructure/prisma/schema.prisma --force
+    npx prisma migrate dev --schema=apps/auth/src/infrastructure/prisma/schema.prisma --name init
 
     echo -e "${GREEN}Auth database schema update completed!${NC}"
 }
@@ -160,7 +160,7 @@ update_project_schema() {
     npx prisma generate --schema=apps/project/src/infrastructure/prisma/schema.prisma
 
     echo "Creating and applying migrations..."
-    npx prisma migrate reset --schema=apps/project/src/infrastructure/prisma/schema.prisma --force
+    npx prisma migrate dev --schema=apps/project/src/infrastructure/prisma/schema.prisma --name init
 
     echo -e "${GREEN}Project database schema update completed!${NC}"
 }

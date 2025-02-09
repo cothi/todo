@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag';
 import { BaseResponse, GraphQLTestHelper } from '../graphql.helper';
-import { DocumentNode } from 'graphql';
+import { BaseHelper } from './abstract/help.abstract';
 
 export enum AuthMutations {
   BASIC_LOGIN = 'BASIC_LOGIN',
@@ -67,28 +67,21 @@ export interface ReissueTokenVariables {
   };
 }
 
-export class AuthTestHelper {
-  constructor(private readonly graphQLTestHelper: GraphQLTestHelper) {}
-
+export class AuthTestHelper extends BaseHelper {
   async login(variables: LoginVariables): Promise<BaseResponse<any>> {
-    return await this.executeMutation(AuthMutations.BASIC_LOGIN, variables);
+    const document = AuthOperations[AuthMutations.BASIC_LOGIN];
+    return await this.execute(document, { variables });
   }
 
   async logout(variables: LogoutVariables): Promise<BaseResponse<any>> {
-    return await this.executeMutation(AuthMutations.BASIC_LOGOUT, variables);
+    const document = AuthOperations[AuthMutations.BASIC_LOGOUT];
+    return await this.execute(document, { variables });
   }
 
   async reissueToken(
     variables: ReissueTokenVariables,
   ): Promise<BaseResponse<any>> {
-    return await this.executeMutation(AuthMutations.REISSUE_TOKEN, variables);
-  }
-
-  private async executeMutation<T>(
-    mutation: AuthMutations,
-    variables: Record<string, any>,
-  ) {
-    const document: DocumentNode = AuthOperations[mutation];
-    return await this.graphQLTestHelper.execute<T>(document, { variables });
+    const document = AuthOperations[AuthMutations.REISSUE_TOKEN];
+    return await this.execute(document, { variables });
   }
 }

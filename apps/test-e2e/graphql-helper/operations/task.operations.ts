@@ -1,6 +1,7 @@
 import { gql } from 'graphql-tag';
 import { BaseResponse, GraphQLTestHelper } from '../graphql.helper';
 import { DocumentNode } from 'graphql';
+import { BaseHelper } from './abstract/help.abstract';
 
 export enum TaskMutations {
   CREATE_TASK = 'CREATE_TASK',
@@ -9,7 +10,7 @@ export enum TaskMutations {
 }
 
 export enum TaskQueries {
-  QUERY_TASK = 'QUERY_TASK',
+  QUERY_TASK_BY_ID = 'QUERY_TASK',
 }
 
 export const TaskOperations = {
@@ -54,9 +55,9 @@ export const TaskOperations = {
     }
   `,
 
-  [TaskQueries.QUERY_TASK]: gql`
-    query QueryTask($input: QueryTaskInput!) {
-      queryTask(input: $input) {
+  [TaskQueries.QUERY_TASK_BY_ID]: gql`
+    query QueryTaskById($input: QueryTaskByIdInput!) {
+      queryTaskById(input: $input) {
         status
         success
         message
@@ -72,53 +73,65 @@ export const TaskOperations = {
   `,
 };
 
-export interface CreateTaskInput {
+export type BaseTaskVariables = {
+  id: string;
   categoryId: string;
   title: string;
   startDate: string;
   endDate: string;
-}
+};
+export type CreateTaskVariables = {
+  input: Omit<BaseTaskVariables, 'id'>;
+};
+export type UpdateTaskVariables = {
+  input: Pick<BaseTaskVariables, 'id' | 'title'>;
+};
+export type DeleteTaskVariables = {
+  input: Pick<BaseTaskVariables, 'id'>;
+};
+export type QueryTaskVariables = {
+  input: Pick<BaseTaskVariables, 'id'>;
+};
 
-export class TaskTestHelper {
-  constructor(private readonly graphQLTestHelper: GraphQLTestHelper) {}
-
-  async createTask(variables: {
-    input: CreateTaskInput;
-  }): Promise<BaseResponse<any>> {
-    return await this.executeMutation(TaskMutations.CREATE_TASK, variables);
+export class TaskTestHelper extends BaseHelper {
+  async createTask(
+    variables: CreateTaskVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = TaskOperations[TaskMutations.CREATE_TASK];
+    return await this.execute(document, { variables, accessToken });
   }
 
-  async updateTask(variables: {
-    input: { id: string; title?: string };
-  }): Promise<BaseResponse<any>> {
-    return await this.executeMutation(TaskMutations.UPDATE_TASK, variables);
+  async updateTask(
+    variables: UpdateTaskVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = TaskOperations[TaskMutations.UPDATE_TASK];
+    return await this.execute(document, {
+      variables,
+      accessToken,
+    });
   }
 
-  async deleteTask(variables: {
-    input: { id: string };
-  }): Promise<BaseResponse<any>> {
-    return await this.executeMutation(TaskMutations.DELETE_TASK, variables);
+  async deleteTask(
+    variables: DeleteTaskVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = TaskOperations[TaskMutations.DELETE_TASK];
+    return await this.execute(document, {
+      variables,
+      accessToken,
+    });
   }
 
-  async queryTask(variables: {
-    input: { id: string };
-  }): Promise<BaseResponse<any>> {
-    return await this.executeQuery(TaskQueries.QUERY_TASK, variables);
-  }
-
-  private async executeMutation<T>(
-    mutation: TaskMutations,
-    variables: Record<string, any>,
-  ) {
-    const document: DocumentNode = TaskOperations[mutation];
-    return await this.graphQLTestHelper.execute<T>(document, { variables });
-  }
-
-  private async executeQuery<T>(
-    query: TaskQueries,
-    variables: Record<string, any>,
-  ) {
-    const document: DocumentNode = TaskOperations[query];
-    return await this.graphQLTestHelper.execute<T>(document, { variables });
+  async queryTaskById(
+    variables: QueryTaskVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = TaskOperations[TaskQueries.QUERY_TASK_BY_ID];
+    return await this.execute(document, {
+      variables,
+      accessToken,
+    });
   }
 }

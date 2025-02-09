@@ -1,6 +1,7 @@
 import { gql } from 'graphql-tag';
 import { BaseResponse, GraphQLTestHelper } from '../graphql.helper';
 import { DocumentNode } from 'graphql';
+import { BaseHelper } from './abstract/help.abstract';
 
 export enum UserQueries {
   QUERY_USER = 'QUERY_USER',
@@ -104,74 +105,30 @@ export interface Options {
   variables?: Record<string, any>;
 }
 
-export class UserTestHelper {
-  constructor(private readonly graphQLTestHelper: GraphQLTestHelper) {}
-
+export class UserTestHelper extends BaseHelper {
   async createUser(variables: CreateUserVariables): Promise<BaseResponse<any>> {
-    return await this.executeMutation(UserMutations.CREATE_USER, variables);
+    const document = UserOperations[UserMutations.CREATE_USER];
+    return await this.execute(document, { variables });
   }
 
   async updateUser(
     variables: UpdateUserVariables,
     accessToken: string,
   ): Promise<BaseResponse<any>> {
-    return await this.executeMutationWithToken(
-      UserMutations.UPDATE_USER,
+    const document = UserOperations[UserMutations.UPDATE_USER];
+    return await this.execute(document, {
       variables,
       accessToken,
-    );
+    });
   }
 
-  async deleteUser(
-    //variables: DeleteUserVariables,
-    accessToken: string,
-  ): Promise<BaseResponse<any>> {
-    return await this.executeMutationOnlyToken(
-      UserMutations.DELETE_USER,
-      accessToken,
-    );
+  async deleteUser(accessToken: string): Promise<BaseResponse<any>> {
+    const document = UserOperations[UserMutations.DELETE_USER];
+    return await this.execute(document, { accessToken });
   }
 
   async queryUser(variables: QueryUserVariables): Promise<BaseResponse<any>> {
-    return await this.executeQuery(UserQueries.QUERY_USER, variables);
-  }
-
-  private async executeMutation<T>(
-    mutation: UserMutations,
-    variables: Record<string, any>,
-  ) {
-    const document: DocumentNode = UserOperations[mutation];
-    return await this.graphQLTestHelper.execute<T>(document, { variables });
-  }
-  private async executeMutationWithToken<T>(
-    mutation: UserMutations,
-    variables: Record<string, any>,
-    accessToken: string,
-  ) {
-    const document: DocumentNode = UserOperations[mutation];
-    return await this.graphQLTestHelper.execute<T>(document, {
-      variables: variables,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-  }
-  private async executeMutationOnlyToken<T>(
-    mutation: UserMutations,
-    accessToken: string,
-  ) {
-    const document: DocumentNode = UserOperations[mutation];
-    return await this.graphQLTestHelper.execute<T>(document, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-  }
-  private async executeQuery<T>(
-    query: UserQueries,
-    variables: Record<string, any>,
-  ) {
-    const document: DocumentNode = UserOperations[query];
-    return await this.graphQLTestHelper.execute<T>(document, variables);
+    const document = UserOperations[UserQueries.QUERY_USER];
+    return await this.execute(document, { variables });
   }
 }

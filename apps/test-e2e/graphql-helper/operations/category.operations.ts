@@ -1,10 +1,10 @@
 import { gql } from 'graphql-tag';
-import { BaseResponse, GraphQLTestHelper } from '../graphql.helper';
-import { DocumentNode } from 'graphql';
+import { BaseResponse } from '../graphql.helper';
+import { BaseHelper } from './abstract/help.abstract';
 
 export enum CategoryMutations {
   CREATE_CATEGORY = 'CREATE_CATEGORY',
-  UPDATE_CATEGORY = 'UPDATE_CATEGORY',
+  CHANGE_CATEGORY_NAME = 'CHANGE_CATEGORY_NAME',
   DELETE_CATEGORY = 'DELETE_CATEGORY',
 }
 
@@ -24,22 +24,20 @@ export const CategoryOperations = {
           id
           name
           projectId
-          color
         }
       }
     }
   `,
 
-  [CategoryMutations.UPDATE_CATEGORY]: gql`
-    mutation UpdateCategory($input: UpdateCategoryInput!) {
-      updateCategory(input: $input) {
+  [CategoryMutations.CHANGE_CATEGORY_NAME]: gql`
+    mutation ChangeCategoryName($input: ChangeCategoryNameInput!) {
+      changeCategoryName(input: $input) {
         status
         success
         message
         data {
           id
           name
-          color
         }
       }
     }
@@ -56,8 +54,8 @@ export const CategoryOperations = {
   `,
 
   [CategoryQueries.QUERY_CATEGORY]: gql`
-    query QueryCategory($input: QueryCategoryInput!) {
-      queryCategory(input: $input) {
+    query QueryCategoryById($input: QueryCategoryByIdInput!) {
+      queryCategoryById(input: $input) {
         status
         success
         message
@@ -65,15 +63,14 @@ export const CategoryOperations = {
           id
           name
           projectId
-          color
         }
       }
     }
   `,
 
   [CategoryQueries.QUERY_CATEGORIES]: gql`
-    query QueryCategories($input: QueryCategoriesInput!) {
-      queryCategories(input: $input) {
+    query QueryCategories {
+      queryCategories {
         status
         success
         message
@@ -82,7 +79,6 @@ export const CategoryOperations = {
             id
             name
             projectId
-            color
           }
         }
       }
@@ -90,101 +86,63 @@ export const CategoryOperations = {
   `,
 };
 
-export interface CreateCategoryInput {
+export type BaseCategoryVariables = {
+  id: string;
   projectId: string;
   name: string;
-  color: string;
-}
+};
 
-export class CategoryTestHelper {
-  constructor(private readonly graphQLTestHelper: GraphQLTestHelper) {}
+type CreateCategoryVariables = {
+  input: Omit<BaseCategoryVariables, 'id'>;
+};
 
+type UpdateCategoryVariables = {
+  input: Pick<BaseCategoryVariables, 'id' | 'name'>;
+};
+
+type DeleteCategoryVariables = {
+  input: Pick<BaseCategoryVariables, 'id'>;
+};
+
+type QueryCategoryByIdVariables = {
+  input: Pick<BaseCategoryVariables, 'id'>;
+};
+
+export class CategoryTestHelper extends BaseHelper {
   async createCategory(
-    variables: { input: CreateCategoryInput },
-    accessToken?: string,
+    variables: CreateCategoryVariables,
+    accessToken: string,
   ): Promise<BaseResponse<any>> {
-    return await this.executeMutationWithAuth(
-      CategoryMutations.CREATE_CATEGORY,
-      variables,
-      accessToken,
-    );
+    const document = CategoryOperations[CategoryMutations.CREATE_CATEGORY];
+    return await this.execute(document, { variables, accessToken });
   }
 
-  async updateCategory(
-    variables: { input: { id: string; name?: string; color?: string } },
-    accessToken?: string,
+  async changeCategoryName(
+    variables: UpdateCategoryVariables,
+    accessToken: string,
   ): Promise<BaseResponse<any>> {
-    return await this.executeMutationWithAuth(
-      CategoryMutations.UPDATE_CATEGORY,
-      variables,
-      accessToken,
-    );
+    const document = CategoryOperations[CategoryMutations.CHANGE_CATEGORY_NAME];
+    return await this.execute(document, { variables, accessToken });
   }
 
   async deleteCategory(
-    variables: { input: { id: string } },
-    accessToken?: string,
+    variables: DeleteCategoryVariables,
+    accessToken: string,
   ): Promise<BaseResponse<any>> {
-    return await this.executeMutationWithAuth(
-      CategoryMutations.DELETE_CATEGORY,
-      variables,
-      accessToken,
-    );
+    const document = CategoryOperations[CategoryMutations.DELETE_CATEGORY];
+    return await this.execute(document, { variables, accessToken });
   }
 
   async queryCategory(
-    variables: { input: { id: string } },
-    accessToken?: string,
+    variables: QueryCategoryByIdVariables,
+    accessToken: string,
   ): Promise<BaseResponse<any>> {
-    return await this.executeQueryWithAuth(
-      CategoryQueries.QUERY_CATEGORY,
-      variables,
-      accessToken,
-    );
+    const document = CategoryOperations[CategoryQueries.QUERY_CATEGORY];
+    return await this.execute(document, { variables, accessToken });
   }
 
-  async queryCategories(
-    variables: { input: { projectId: string } },
-    accessToken?: string,
-  ): Promise<BaseResponse<any>> {
-    return await this.executeQueryWithAuth(
-      CategoryQueries.QUERY_CATEGORIES,
-      variables,
-      accessToken,
-    );
-  }
-
-  private async executeMutationWithAuth<T>(
-    mutation: CategoryMutations,
-    variables: Record<string, any>,
-    accessToken?: string,
-  ) {
-    const document: DocumentNode = CategoryOperations[mutation];
-    const options: any = { variables };
-
-    if (accessToken) {
-      options.headers = {
-        Authorization: `Bearer ${accessToken}`,
-      };
-    }
-
-    return await this.graphQLTestHelper.execute<T>(document, options);
-  }
-
-  private async executeQueryWithAuth<T>(
-    query: CategoryQueries,
-    variables: Record<string, any>,
-    accessToken?: string,
-  ) {
-    const document: DocumentNode = CategoryOperations[query];
-    const options: any = { variables };
-
-    if (accessToken) {
-      options.headers = {
-        Authorization: `Bearer ${accessToken}`,
-      };
-    }
-
-    return await this.graphQLTestHelper.execute<T>(document, options);
+  async queryCategories(accessToken: string): Promise<BaseResponse<any>> {
+    const document = CategoryOperations[CategoryQueries.QUERY_CATEGORIES];
+    return await this.execute(document, { accessToken });
   }
 }

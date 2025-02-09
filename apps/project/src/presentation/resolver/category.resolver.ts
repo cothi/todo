@@ -92,4 +92,6 @@ export class CategoryResolver {
       CategoryPresentationMapper.entityToQueryCategoryByIdOutput(result);
     return ResponseManager.success(output);
   }
+
+  // TODO: Query Category By Project Id, options status
 }

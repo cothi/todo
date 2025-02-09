@@ -1,17 +1,12 @@
 import { INestApplication } from '@nestjs/common';
+import { MicroserviceOptions } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AuthModule } from '../auth/src/auth.module';
 import { UserModule } from '../user/src/user.module';
 import { GraphQLTestHelper } from './graphql-helper/graphql.helper';
-import { UserTestHelper } from './graphql-helper/operations/user.operations';
-import { AuthModule } from '../auth/src/auth.module';
-import {
-  GrpcOptions,
-  MicroserviceOptions,
-  Transport,
-} from '@nestjs/microservices';
-import { AUTH_PACKAGE_NAME } from '@libs/grpc';
-import { join } from 'path';
 import { AuthTestHelper } from './graphql-helper/operations/auth.operations';
+import { UserTestHelper } from './graphql-helper/operations/user.operations';
+import { authGrpcTestServerOptions } from './options/auth-grpc-test-server.options';
 
 describe('User Resolver e2e', () => {
   let app: INestApplication;
@@ -23,17 +18,9 @@ describe('User Resolver e2e', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AuthModule, UserModule],
     }).compile();
-    const authGrpcServerOptions: GrpcOptions = {
-      transport: Transport.GRPC,
-      options: {
-        package: AUTH_PACKAGE_NAME,
-        protoPath: join(__dirname, '../../proto/auth.proto'),
-        url: '0.0.0.0:50052',
-      },
-    };
 
     app = moduleFixture.createNestApplication();
-    app.connectMicroservice<MicroserviceOptions>(authGrpcServerOptions);
+    app.connectMicroservice<MicroserviceOptions>(authGrpcTestServerOptions);
     await app.startAllMicroservices();
     await app.init();
 
@@ -144,6 +131,7 @@ describe('User Resolver e2e', () => {
 
     it('should delete user', async () => {
       const response = await userTestHelper.deleteUser(accessToken);
+      console.log(response.data);
 
       expect(response.success).toBe(true);
       expect(response.data).toHaveProperty('userId');

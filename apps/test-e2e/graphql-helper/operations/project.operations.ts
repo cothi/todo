@@ -1,6 +1,7 @@
 import { gql } from 'graphql-tag';
 import { BaseResponse, GraphQLTestHelper } from '../graphql.helper';
 import { DocumentNode } from 'graphql';
+import { BaseHelper } from './abstract/help.abstract';
 
 export enum ProjectMutations {
   CREATE_PROJECT = 'CREATE_PROJECT',
@@ -69,55 +70,81 @@ export const ProjectOperations = {
   `,
 };
 
-export class ProjectTestHelper {
-  constructor(private readonly graphQLTestHelper: GraphQLTestHelper) {}
+export interface ProjectInputBase {
+  id: string;
+  name: string;
+}
 
-  async createProject(variables: {
-    input: { name: string };
-  }): Promise<BaseResponse<any>> {
-    return await this.executeMutation(
-      ProjectMutations.CREATE_PROJECT,
+export interface CreateProjectVariables {
+  input: Pick<ProjectInputBase, 'name'>;
+}
+
+export interface UpdateProjectVariables {
+  input: {
+    projectId: string;
+    name: string;
+  };
+}
+
+export interface DeleteProjectVariables {
+  input: {
+    projectId: string;
+  };
+}
+
+export interface QueryProjectVariables {
+  input: {
+    projectId: string;
+  };
+}
+
+export interface Options {
+  accessToken?: string;
+  variables?: Record<string, any>;
+}
+
+export class ProjectTestHelper extends BaseHelper {
+  async createProject(
+    variables: CreateProjectVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = ProjectOperations[ProjectMutations.CREATE_PROJECT];
+    return await this.execute(document, {
+      accessToken,
       variables,
-    );
+    });
   }
 
-  async updateProject(variables: {
-    input: { projectId: string; name: string };
-  }): Promise<BaseResponse<any>> {
-    return await this.executeMutation(
-      ProjectMutations.UPDATE_PROJECT,
+  async updateProject(
+    variables: UpdateProjectVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = ProjectOperations[ProjectMutations.UPDATE_PROJECT];
+    return await this.execute(document, {
+      accessToken,
       variables,
-    );
+    });
   }
 
-  async deleteProject(variables: {
-    input: { projectId: string };
-  }): Promise<BaseResponse<any>> {
-    return await this.executeMutation(
-      ProjectMutations.DELETE_PROJECT,
+  async deleteProject(
+    variables: DeleteProjectVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = ProjectOperations[ProjectMutations.DELETE_PROJECT];
+    return await this.execute(document, {
+      accessToken,
       variables,
-    );
+    });
   }
 
-  async queryProject(variables: {
-    input: { projectId: string };
-  }): Promise<BaseResponse<any>> {
-    return await this.executeQuery(ProjectQueries.QUERY_PROJECT, variables);
-  }
-
-  private async executeMutation<T>(
-    mutation: ProjectMutations,
-    variables: Record<string, any>,
-  ) {
-    const document: DocumentNode = ProjectOperations[mutation];
-    return await this.graphQLTestHelper.execute<T>(document, { variables });
-  }
-
-  private async executeQuery<T>(
-    query: ProjectQueries,
-    variables: Record<string, any>,
-  ) {
-    const document: DocumentNode = ProjectOperations[query];
-    return await this.graphQLTestHelper.execute<T>(document, { variables });
+  async queryProject(
+    variables: QueryProjectVariables,
+    accessToken: string,
+  ): Promise<BaseResponse<any>> {
+    const document = ProjectOperations[ProjectQueries.QUERY_PROJECT];
+    return await this.execute(document, {
+      accessToken,
+      variables,
+    });
   }
 }
