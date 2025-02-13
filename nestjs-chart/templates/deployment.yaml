@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}"
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}"
+    
+    spec:
+      containers:
+        - name: user
+          image: "{{ .Values.images.app1.repository }}:{{ .Values.images.app1.tag }}"
+          imagePullPolicy: {{ .Values.images.app1.pullPolicy }}
+          env:
+            - name: DATABASE_USER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: "{{ .Release.Name }}-config"
+                  key: DATABASE_USER_URL
+          ports:
+            - containerPort: 3001

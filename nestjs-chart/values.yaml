@@ -1,0 +1,27 @@
+# Default values for nestjs-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+replicaCount: 1
+
+
+replicaCounts:
+  app1: 2
+
+images:
+  app1:
+    repository: "user"
+    tag: "0.2"
+    pullPolicy: "IfNotPresent"
+
+database: 
+  user:
+    host: "192.168.0.70"
+    port: 6001
+    name: "userdb"
+    username: "root"
+    password: "1234"
+    url: "mysql://root:1234@192.168.0.70:6001/userdb"
+
+

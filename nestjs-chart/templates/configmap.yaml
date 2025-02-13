@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: '{{ .Release.Name }}-config'
+
+data:
+  USER_DB_HOST: "{{ .Values.database.user.host }}"
+  USER_DB_PORT: "{{ .Values.database.user.port }}"
+  USER_DB_NAME: "{{ .Values.database.user.name }}"
+  USER_DB_PASSWORD: "{{ .Values.database.user.password }}"
+  USER_DB_USERNAME: "{{ .Values.database.user.username }}"
+  DATABASE_USER_URL: "{{ .Values.database.user.url }}"

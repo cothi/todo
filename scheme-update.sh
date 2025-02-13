@@ -9,9 +9,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-export DATABASE_AUTH_URL=mysql://root:1234@localhost:6002/authdb
+export DATABASE_AUTH_URL=mysql://root:1234@localhost:6001/authdb
 export DATABASE_USER_URL=mysql://root:1234@localhost:6001/userdb
-export DATABASE_PROJECT_URL=mysql://root:1234@localhost:6003/projectdb
+export DATABASE_PROJECT_URL=mysql://root:1234@localhost:6001/projectdb
 
 
 # 도움말 정보 출력 함수
@@ -57,46 +57,46 @@ docker_compose_operation() {
         user)
             if [ "$operation" = "setup" ]; then
                 echo -e "${YELLOW}Starting user database container...${NC}"
-                docker compose up $detach_opt mysql-user
+                docker compose up $detach_opt mysql
             elif [ "$operation" = "up" ]; then
                 echo -e "${YELLOW}Starting all user service containers...${NC}"
-                docker compose up $detach_opt mysql-user user
+                docker compose up $detach_opt mysql user
             elif [ "$operation" = "down" ]; then
-                docker compose rm -sf mysql-user user
+                docker compose rm -sf mysql user
             else
-                docker compose restart mysql-user user
+                docker compose restart mysql user
             fi
             ;;
         auth)
             if [ "$operation" = "setup" ]; then
                 echo -e "${YELLOW}Starting auth database container...${NC}"
-                docker compose up $detach_opt mysql-auth
+                docker compose up $detach_opt mysql
             elif [ "$operation" = "up" ]; then
                 echo -e "${YELLOW}Starting all auth service containers...${NC}"
-                docker compose up $detach_opt mysql-auth auth
+                docker compose up $detach_opt mysql auth
             elif [ "$operation" = "down" ]; then
-                docker compose rm -sf mysql-auth auth
+                docker compose rm -sf mysql auth
             else
-                docker compose restart mysql-auth auth
+                docker compose restart mysql auth
             fi
             ;;
         project)
             if [ "$operation" = "setup" ]; then
                 echo -e "${YELLOW}Starting project database container...${NC}"
-                docker compose up $detach_opt mysql-project
+                docker compose up $detach_opt mysql
             elif [ "$operation" = "up" ]; then
                 echo -e "${YELLOW}Starting all project service containers...${NC}"
-                docker compose up $detach_opt mysql-project project
+                docker compose up $detach_opt mysql project
             elif [ "$operation" = "down" ]; then
-                docker compose rm -sf mysql-project project
+                docker compose rm -sf mysql project
             else
-                docker compose restart mysql-project project
+                docker compose restart mysql project
             fi
             ;;
         all)
             if [ "$operation" = "setup" ]; then
                 echo -e "${YELLOW}Starting all database containers...${NC}"
-                docker compose up $detach_opt mysql-user mysql-auth mysql-project
+                docker compose up $detach_opt mysql
             elif [ "$operation" = "up" ]; then
                 echo -e "${YELLOW}Starting all service containers...${NC}"
                 docker compose up $detach_opt

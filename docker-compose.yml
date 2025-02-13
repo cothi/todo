@@ -10,7 +10,7 @@ services:
 
     command: sh apps/scripts/start-user.sh
     depends_on:
-      mysql-user:
+      mysql:
         condition: service_healthy
     volumes:
       - ./apps/user:/usr/src/app/apps/user
@@ -19,23 +19,6 @@ services:
       DATABASE_USER_URL: ${DATABASE_USER_URL}
 
 
-  mysql-user:
-    image: mysql:latest
-    environment:
-      MYSQL_DATABASE: userdb
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: '1234'
-      MYSQL_ROOT_PASSWORD: '1234'
-    ports:
-      - '6001:3306'
-    volumes:
-      - 'mysql_user_data:/var/lib/mysql'
-    healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   auth:
     container_name: auth
@@ -50,7 +33,7 @@ services:
       - "50051:50051"    # gRPC 포트 추가
     command: sh apps/scripts/start-auth.sh
     depends_on:
-      mysql-auth:
+      mysql:
         condition: service_healthy
     volumes:
       - ./apps/auth:/usr/src/app/apps/auth
@@ -58,23 +41,6 @@ services:
     environment:
       DATABASE_AUTH_URL: ${DATABASE_AUTH_URL}
 
-  mysql-auth:
-    image: mysql:latest
-    environment:
-      MYSQL_DATABASE: authdb
-      MYSQL_USER: 'auth'
-      MYSQL_PASSWORD: '1234'
-      MYSQL_ROOT_PASSWORD: '1234'
-    ports:
-      - '6002:3306'
-    volumes:
-        - 'mysql_auth_data:/var/lib/mysql'
-    healthcheck:
-        test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-        interval: 5s
-        timeout: 5s
-        retries: 5
-        start_period: 30s
 
   project:
     build:
@@ -86,7 +52,7 @@ services:
 
     command: sh apps/scripts/start-project.sh
     depends_on:
-      mysql-project:
+      mysql:
         condition: service_healthy
     volumes:
       - ./apps/project:/usr/src/app/apps/project
@@ -95,17 +61,16 @@ services:
       DATABASE_PROJECT_URL: ${DATABASE_PROJECT_URL}
 
 
-  mysql-project:
+  mysql:
     image: mysql:latest
     environment:
-      MYSQL_DATABASE: projectdb
-      MYSQL_USER: 'project'
+      MYSQL_USER: 'todo'
       MYSQL_PASSWORD: '1234'
       MYSQL_ROOT_PASSWORD: '1234'
     ports:
-      - '6003:3306'
+      - '6001:3306'
     volumes:
-      - 'mysql_project_data:/var/lib/mysql'
+      - 'mysql_data:/var/lib/mysql'
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 5s
@@ -116,6 +81,4 @@ services:
       
 
 volumes:
-  mysql_user_data:
-  mysql_auth_data:
-  mysql_project_data:
+  mysql_data:

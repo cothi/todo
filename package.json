@@ -25,10 +25,11 @@
     "test:e2e:user": "jest --config ./apps/user/test/jest-e2e.json --runInBand"
   },
   "dependencies": {
+    "@apollo/gateway": "^2.9.3",
     "@apollo/server": "^4.11.0",
     "@grpc/grpc-js": "^1.12.5",
     "@grpc/proto-loader": "^0.7.13",
-    "@nestjs/apollo": "^12.2.0",
+    "@nestjs/apollo": "^12.2.2",
     "@nestjs/axios": "^3.0.3",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",
