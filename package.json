@@ -105,7 +105,8 @@
     "roots": [
       "<rootDir>/apps",
       "<rootDir>/libs",
-      "<rootDir>/libs/"
+      "<rootDir>/libs/",
+      "<rootDir>/apps/"
     ],
     "testRegex": ".*\\.(spec|e2e-spec)\\.ts$",
     "transform": {
